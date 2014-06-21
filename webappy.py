@@ -22,5 +22,22 @@ def get_student():
     return html
     #return hackbright_app.get_student_by_github(student_github)
 
+@app.route("/project_grades")
+def get_project_grades():
+    hackbright_app.connect_to_db()
+    project = request.args.get("title")
+    print " ______________________ %r ______________________" % project
+    row = hackbright_app.all_grades_for_project(project)
+    print "__________________%r_________________" % row
+    html = render_template("project_grades.html", row = row,
+                                                title = project,
+                                                first_name = row[0],
+                                                last_name = row[1],
+                                                grade = row[2],
+                                                github = row[3])
+    return html
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)

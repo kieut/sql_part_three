@@ -29,6 +29,17 @@ def show_all_grades(first_name, last_name):
         # Project: %s     Grade: %s """ % (grades[i][1], grades[i][2])
     #return grades
 
+def all_grades_for_project(title):
+    print title
+    query = """SELECT * FROM Grades
+            JOIN Students ON (Grades.student_github = Students.github)
+            WHERE project_title = ?"""
+    DB.execute(query, (title,))
+    all_grades = DB.fetchall()
+    list_of_all_grades = []
+    for i in range(0, len(all_grades)):
+        list_of_all_grades.append((all_grades[i][3], all_grades[i][4], all_grades[i][2], all_grades[i][5]))
+    return list_of_all_grades
 
 def get_student_grade(first_name, last_name, title):
     query = """SELECT grade FROM Grades
@@ -36,7 +47,7 @@ def get_student_grade(first_name, last_name, title):
                 WHERE first_name = ? AND last_name = ? AND project_title = ?"""
     DB.execute(query, (first_name, last_name, title))
     row = DB.fetchone()
-    print """\
+    return """\
 Student: %s %s
 Project Title: %s
 Grade: %s """ % (first_name, last_name, title, row[0])
@@ -108,6 +119,8 @@ def main():
             give_grade (*args)
         elif command == "show_grades":
             show_all_grades (*args)
+        elif command =="all_grades_for_project":
+            all_grades_for_project(*args)
 
     CONN.close()
 
